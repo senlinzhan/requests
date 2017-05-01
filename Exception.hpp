@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+namespace requests {
+    
 class Exception : public std::exception
 {
 public:
@@ -26,6 +28,6 @@ private:
     std::string message_;
 };
 
-
+} // namespace requests
 
 #endif /* EXCEPTION_H */

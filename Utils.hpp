@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 
+namespace requests {
+
 std::vector<std::string> splitTokens(const std::string &str, const std::string &separator)
 {
     std::vector<std::string> results;
@@ -36,5 +38,6 @@ std::vector<std::string> splitTokens(const std::string &str, const std::string &
     return results;
 }
 
+} // namespace requests
 
 #endif /* UTILS_H */

@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <iostream>
 
+namespace requests {
+
 class Response
 {
 public:
@@ -15,16 +17,11 @@ public:
         : headers_(headers), content_(content)
     {
         auto lines = splitTokens(headers_, "\r\n");
-        auto statusLine = lines[0];
-        auto tokens = splitTokens(statusLine, " ");
+        auto tokens = splitTokens(lines[0], " ");
 
         version_ = std::move(tokens[0]);
         statusCode_ = std::stoi(tokens[1]);
         statusMessage_ = std::move(tokens[2]);
-    }
-
-    ~Response()
-    {        
     }
 
     unsigned short statusCode() const
@@ -55,5 +52,7 @@ private:
     std::string       version_;
     std::string       statusMessage_;
 };
+
+} // namespace requests
 
 #endif /* RESPONSE_H */

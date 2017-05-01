@@ -5,6 +5,8 @@
 #include "Exception.hpp"
 #include <string>
 
+namespace requests {
+
 class Url
 {
 public:
@@ -54,5 +56,7 @@ private:
     std::string host_;
     std::string path_;    
 };
+
+} // namespace requests
 
 #endif /* URL_H */

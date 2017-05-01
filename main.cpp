@@ -1,14 +1,12 @@
 #include <boost/asio.hpp>
 
-#include "Requests.hpp"
+#include "Request.hpp"
 #include <iostream>
 
 int main(int argc, char *argv[])
-{
-    boost::asio::io_service service;
-    
-    Request request(service);
-    Url url("http://www.baidu.com");
+{   
+    requests::Request request;
+    requests::Url url("http://www.baidu.com");
      
     auto resp = request.get(url);
     std::cout << "status code: " << resp.statusCode() << std::endl;

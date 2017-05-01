@@ -1,7 +1,6 @@
 #ifndef REQUESTS_H
 #define REQUESTS_H
 
-
 #include "Response.hpp"
 #include "Url.hpp"
 
@@ -10,6 +9,8 @@
 #include <boost/asio.hpp>
 #include <iostream>
 
+namespace requests {
+    
 class Request
 {
 public:
@@ -21,14 +22,7 @@ public:
     using Buffer    = boost::asio::streambuf;
     using String    = std::string;
     
-    Request(IOService &service)
-        : service_(service)
-    {        
-    }
-    
-    ~Request()
-    {        
-    }
+    Request() = default;
 
     Response get(const Url &url)
     {
@@ -85,7 +79,6 @@ public:
     }
             
 private:
-
     static void sendRequestHeaders(SocketPtr &socket, const Url &url)
     {
         Buffer reqBuff;
@@ -113,8 +106,9 @@ private:
         return str;
     }
     
-    IOService &service_;
+    IOService service_;
 };
 
+} // namespace requests
 
 #endif /* REQUESTS_H */
