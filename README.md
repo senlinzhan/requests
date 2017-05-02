@@ -12,7 +12,7 @@ int main()
     requests::Request request;
     requests::Url url("http://www.baidu.com");
     
-	// make HTTP request
+    // make HTTP request
     auto resp = request.get(url);
 	
     std::cout << url << std::endl;                             // http://www.baidu.com
