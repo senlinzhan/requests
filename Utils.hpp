@@ -7,35 +7,56 @@
 
 namespace requests {
 
-std::vector<std::string> splitTokens(const std::string &str, const std::string &separator)
+std::vector<std::string> splitString(const std::string &str, const std::string &separator)
 {
     std::vector<std::string> results;
 
-    std::size_t beginPos = 0;
-    std::size_t pos = str.find(separator, beginPos);
-    
-    while (pos != std::string::npos)
+    std::size_t first = 0, last = 0;
+
+    while (first < str.size())
     {
-        if (pos > beginPos)
+        last = str.find(separator, first + 1);
+        if (last == std::string::npos)
         {
-            results.push_back(str.substr(beginPos, pos - beginPos));            
-        }
-
-        beginPos = pos + separator.size();
-
-        if (beginPos >= str.size())
-        {
+            results.push_back(str.substr(first));
             break;
         }
-        pos = str.find(separator, beginPos);
-    }    
-
-    if (beginPos < str.size())
-    {
-        results.push_back(str.substr(beginPos));
+        results.push_back(str.substr(first, last - first));
+        first = last + separator.size();
     }
-    
-    return results;
+
+    return results;    
+}
+
+std::vector<std::string> splitString(const std::string &str, const std::string &separator, std::size_t splitTimes)
+{
+    if (splitTimes == 0)
+    {
+        return { str };
+    }
+
+    std::size_t first = 0, last = 0, times = 0;
+    std::vector<std::string> results;    
+
+    while (first < str.size())
+    {
+        last = str.find(separator, first + 1);
+        if (last == std::string::npos)
+        {
+            results.push_back(str.substr(first));
+            break;
+        }
+        results.push_back(str.substr(first, last - first));
+        first = last + separator.size();
+
+        if (++times == splitTimes)
+        {
+            results.push_back(str.substr(first));
+            break;
+        }
+    }
+
+    return results;    
 }
 
 } // namespace requests

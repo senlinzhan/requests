@@ -58,16 +58,15 @@ public:
         Buffer respBuff;
         String content;
 
-        std::size_t n;
-        while ((n = boost::asio::read(*socket, respBuff,
-                                      boost::asio::transfer_at_least(1),
-                                      readErr)))
+        while (boost::asio::read(*socket, respBuff,
+                                 boost::asio::transfer_at_least(1),
+                                 readErr))
         {
             if (readErr)
             {
                 break;
             }
-            content += bufferToString(respBuff, n);
+            content += bufferToString(respBuff);
         }
         
         if (readErr && readErr != boost::asio::error::eof)
@@ -96,13 +95,16 @@ private:
     {
         Buffer respBuff;
         std::size_t n = boost::asio::read_until(*socket, respBuff, "\r\n\r\n");
-        return bufferToString(respBuff, n);        
+        return bufferToString(respBuff);        
     }
 
-    static String bufferToString(Buffer &buffer, std::size_t n)
+    static String bufferToString(Buffer &buffer)
     {
+        auto size = buffer.size();
         auto data = buffer.data();
-        String str(boost::asio::buffers_begin(data), boost::asio::buffers_begin(data) + n);        
+        
+        String str(boost::asio::buffers_begin(data), boost::asio::buffers_begin(data) + size);
+        buffer.consume(size);
         return str;
     }
     

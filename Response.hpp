@@ -14,14 +14,21 @@ class Response
 {
 public:
     Response(const std::string &headers, const std::string &content)
-        : headers_(headers), content_(content)
+        : headersStr_(headers), content_(content)
     {
-        auto lines = splitTokens(headers_, "\r\n");
-        auto tokens = splitTokens(lines[0], " ");
-
+        auto lines = splitString(headersStr_, "\r\n");
+        auto tokens = splitString(lines[0], " ");
+        
         version_ = std::move(tokens[0]);
         statusCode_ = std::stoi(tokens[1]);
         statusMessage_ = std::move(tokens[2]);
+
+        for (int i = 1; i < lines.size(); ++i)
+        {
+            auto header = lines[i];
+            auto kv = splitString(header, ": ");
+            headers_[kv[0]] = kv[1];
+        }
     }
 
     unsigned short statusCode() const
@@ -39,18 +46,23 @@ public:
         return statusMessage_;
     }
 
-    const std::string &headers() const
+    const std::unordered_map<std::string, std::string> &headers() const
+    {
+        return headers_;
+    }   
+
+    std::unordered_map<std::string, std::string> &headers()
     {
         return headers_;
     }
     
 private:
-    std::string       headers_;
-    std::string       content_;
-
-    unsigned short    statusCode_;    
-    std::string       version_;
-    std::string       statusMessage_;
+    std::string                                  headersStr_;
+    std::string                                  content_;
+    std::string                                  version_;
+    std::string                                  statusMessage_;
+    unsigned short                               statusCode_;        
+    std::unordered_map<std::string, std::string> headers_;
 };
 
 } // namespace requests

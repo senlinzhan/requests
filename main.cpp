@@ -1,5 +1,3 @@
-#include <boost/asio.hpp>
-
 #include "Request.hpp"
 #include <iostream>
 
@@ -9,12 +7,9 @@ int main(int argc, char *argv[])
     requests::Url url("http://www.baidu.com");
      
     auto resp = request.get(url);
-    std::cout << "status code: " << resp.statusCode() << std::endl;
-    std::cout << "status message: " << resp.statusMessage() << std::endl;
-
-    std::cout << "Headers: " << std::endl;
-    auto headers = resp.headers();
-    std::cout << headers << std::endl;
-     
+    std::cout << "Make request to " << url << std::endl;
+    std::cout << "Status Code: " << resp.statusCode() << std::endl;
+    std::cout << "Content-Type: " << resp.headers()["Content-Type"] << std::endl;
+    
     return 0;
 }
