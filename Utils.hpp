@@ -15,13 +15,16 @@ std::vector<std::string> splitString(const std::string &str, const std::string &
 
     while (first < str.size())
     {
-        last = str.find(separator, first + 1);
+        last = str.find(separator, first);
         if (last == std::string::npos)
         {
             results.push_back(str.substr(first));
             break;
         }
-        results.push_back(str.substr(first, last - first));
+        if (last != first)
+        {
+            results.push_back(str.substr(first, last - first));            
+        }
         first = last + separator.size();
     }
 
@@ -40,13 +43,17 @@ std::vector<std::string> splitString(const std::string &str, const std::string &
 
     while (first < str.size())
     {
-        last = str.find(separator, first + 1);
+        last = str.find(separator, first);
         if (last == std::string::npos)
         {
             results.push_back(str.substr(first));
             break;
         }
-        results.push_back(str.substr(first, last - first));
+        if (last != first)
+        {
+            results.push_back(str.substr(first, last - first));            
+        }
+        
         first = last + separator.size();
 
         if (++times == splitTimes)
