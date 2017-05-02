@@ -13,9 +13,9 @@ int main()
     requests::Url url("http://www.baidu.com");
      
     auto resp = request.get(url);
-    std::cout << "Make request to " << url << std::endl;
-    std::cout << "Status Code: " << resp.statusCode() << std::endl;
-    std::cout << "Content-Type: " << resp.headers()["Content-Type"] << std::endl;
+    std::cout << url << std::endl;                             // http://www.baidu.com
+    std::cout << resp.statusCode() << std::endl;               // 200
+    std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 		
     return 0;
 }
