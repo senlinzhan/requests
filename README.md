@@ -11,8 +11,10 @@ int main()
 {
     requests::Request request;
     requests::Url url("http://www.baidu.com");
-     
+    
+	// make HTTP request
     auto resp = request.get(url);
+	
     std::cout << url << std::endl;                             // http://www.baidu.com
     std::cout << resp.statusCode() << std::endl;               // 200
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
