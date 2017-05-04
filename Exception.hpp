@@ -15,7 +15,7 @@ public:
     }
 
     explicit Exception(std::string &&message)
-        : message_(message)
+        : message_(std::move(message))
     {        
     }
     

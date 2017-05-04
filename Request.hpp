@@ -30,15 +30,16 @@ public:
         Resolver::query query(url.host(), "http");
 
         ErrorCode err;
-        Resolver::iterator endpoint;        
-        Resolver::iterator nullEndpoint;
+        Resolver::iterator iter;        
+        Resolver::iterator nullIter;
 
         SocketPtr socket = nullptr;
         
-        for (endpoint = resolver.resolve(query); endpoint != nullEndpoint; ++endpoint)
+        for (iter = resolver.resolve(query); iter != nullIter; ++iter)
         {
-            SocketPtr sock(new Socket(service_));
-            sock->connect(*endpoint, err);            
+            auto endpoint = iter->endpoint();
+            SocketPtr sock(new Socket(service_, endpoint.protocol()));
+            sock->connect(endpoint, err);            
             if (!err)
             {
                 socket = std::move(sock);                
