@@ -30,7 +30,7 @@ public:
     {
         std::ostream reqStream(&requestBuff_);
         
-        reqStream << "GET " << url.path() << " HTTP/1.0\r\n";
+        reqStream << "GET " << url.path() << " HTTP/1.1\r\n";
         reqStream << "Host: " << url.host() << "\r\n";
         reqStream << "Accept: */*\r\n";
         reqStream << "Connection: close\r\n\r\n";            
