@@ -15,7 +15,7 @@ int main()
     requests::Request request;
     requests::Url url("http://www.baidu.com");
     
-    // make HTTP request
+    // 发起 HTTP 请求，阻塞
     auto resp = request.get(url);
 	
     std::cout << url << std::endl;                             // http://www.baidu.com
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     requests::AsyncRequest asyncRequest;
     requests::Url url("http://www.baidu.com");
 
-    // make HTTP request
+    // 发起 HTTP 请求，非阻塞
     asyncRequest.get(url, callback);
     
     return 0;
