@@ -31,6 +31,7 @@ int main()
 #include "AsyncRequest.hpp"
 #include <iostream>
 
+// 用户提供的回调函数
 void callback(requests::Response &resp)
 {
     std::cout << resp.statusCode() << std::endl;               // 200
