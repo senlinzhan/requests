@@ -6,9 +6,9 @@
 #include "Url.hpp"
 #include "Context.hpp"
 
-#include <memory>
 #include <boost/asio.hpp>
 #include <iostream>
+#include <memory>
 
 namespace requests {
    
@@ -27,6 +27,14 @@ public:
           resolver_(service_)
     {
     }
+
+    // disable the copy operations
+    AsyncRequest(const AsyncRequest &) = delete;
+    AsyncRequest &operator=(const AsyncRequest &) = delete;
+
+    // enable the move operations
+    AsyncRequest(AsyncRequest &&) = default;
+    AsyncRequest &operator=(AsyncRequest &&) = delete;
     
     void get(const Url &url, const UserCallback &callback)
     {
@@ -119,8 +127,6 @@ public:
         // NOTE: str may contain mutiple "\r\n\r\n"
         auto str = bufferToString(respBuffer);
         auto parts = splitString(str, "\r\n\r\n", 1);
-
-        assert(parts.size() == 1 || parts.size() == 2);
         
         String headers, content;
         headers = std::move(parts[0]);        
@@ -172,7 +178,7 @@ public:
     }
 
 private:
-    IOService &service_;
+    IOService  &service_;
     Resolver   resolver_;
 };
 

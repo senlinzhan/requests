@@ -35,23 +35,41 @@ public:
         reqStream << "Accept: */*\r\n";
         reqStream << "Connection: close\r\n\r\n";            
     }
-    
-    Socket &socket()
-    {
-        return sock_;
-    }
 
+    // disable the copy operations
+    Context(const Context &) = delete;
+    Context &operator=(const Context &) = delete;
+
+    // enable the move operations
+    Context(Context &&) = default;
+    Context &operator=(Context &&) = default;
+    
     const Socket &socket() const
     {
         return sock_;
-    }
-    
-    Url &url()
+    }    
+
+    const Url &url() const
     {
         return url_;
     }
+    
+    const Buffer &reqBuff() const
+    {
+        return requestBuff_;
+    }
+    
+    const Buffer &respBuff() const
+    {
+        return responseBuff_;
+    }
 
-    const Url &url() const
+    Socket &socket()
+    {
+        return sock_;
+    }    
+
+    Url &url()
     {
         return url_;
     }
@@ -61,17 +79,7 @@ public:
         return requestBuff_;
     }
     
-    const Buffer &reqBuff() const
-    {
-        return requestBuff_;
-    }
-    
     Buffer &respBuff()
-    {
-        return responseBuff_;
-    }
-
-    const Buffer &respBuff() const
     {
         return responseBuff_;
     }
@@ -86,9 +94,14 @@ public:
         headers_ = std::move(headers);
     }
     
-    void appendContent(const String content)
+    void appendContent(const String &content)
     {
-        content_ += content;
+        content_.append(content);
+    }
+
+    void appendContent(String &&content)
+    {
+        content_.append(std::move(content));
     }
     
     void handleResponse()

@@ -6,11 +6,11 @@
 #include "Url.hpp"
 #include "Utils.hpp"
 
+#include <boost/asio.hpp>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-#include <boost/asio.hpp>
-#include <iostream>
 
 namespace requests {    
 
@@ -25,11 +25,22 @@ public:
     using Buffer      = boost::asio::streambuf;
     using String      = std::string;
     
-    Request() = default;
+    Request()
+        : service_(),
+          resolver_(service_)
+    {        
+    }
 
+    // disable the copy operations
+    Request(const Request &) = delete;
+    Request &operator=(const Request &) = delete;
+
+    // enable the move operations
+    Request(Request &&) = default;
+    Request &operator=(Request &&) = default;
+        
     Response get(const Url &url)
     {
-        Resolver resolver(service_);
         Resolver::query query(url.host(), "http");
 
         ErrorCode err;
@@ -38,7 +49,7 @@ public:
 
         SocketPtr socket = nullptr;
         
-        for (iter = resolver.resolve(query); iter != nullIter; ++iter)
+        for (iter = resolver_.resolve(query); iter != nullIter; ++iter)
         {
             auto endpoint = iter->endpoint();
             SocketPtr sock(new Socket(service_, endpoint.protocol()));
@@ -56,6 +67,7 @@ public:
         }
 
         sendRequestHeaders(socket, url);
+        
         return readResponse(socket);
     }
             
@@ -82,8 +94,6 @@ private:
         
         auto str = bufferToString(respBuff);
         auto parts = splitString(str, "\r\n\r\n", 1);
-
-        assert(parts.size() == 1 || parts.size() == 2);
         
         String headers, content;
         headers = std::move(parts[0]);        
@@ -112,6 +122,7 @@ private:
     }
     
     IOService service_;
+    Resolver  resolver_;
 };
 
 } // namespace requests

@@ -20,6 +20,7 @@ public:
         {
             throw Exception("Invalid URL - no schema supplied: " + url_);                        
         }
+        
         schema_ = std::move(tokens[0]);
         auto other = splitString(tokens[1], "/", 1);
 
@@ -28,7 +29,7 @@ public:
 
         if (other.size() == 2)
         {
-            path_ += std::move(other[1]);
+            path_.append(std::move(other[1]));
         }
     }
 
