@@ -82,7 +82,10 @@ private:
         reqStream << "Accept: */*\r\n";
         reqStream << "Connection: close\r\n\r\n";
         
-        boost::asio::write(*socket, reqBuff);        
+        boost::asio::write(*socket, reqBuff);
+
+        // shutdown on write
+        socket->shutdown(Socket::shutdown_send);        
     }
 
     Response readResponse(SocketPtr &socket)

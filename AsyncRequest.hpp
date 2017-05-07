@@ -9,6 +9,7 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 namespace requests {
    
@@ -21,13 +22,25 @@ public:
     using ErrorCode  = boost::system::error_code;
     using Buffer     = boost::asio::streambuf;
     using String     = std::string;   
+    using Work       = IOService::work;
     
-    AsyncRequest(IOService &service)
-        : service_(service),
-          resolver_(service_)
+    AsyncRequest()
+        : service_(),
+          resolver_(service_),
+          work_(new Work(service_))
     {
+        thread_.reset(new std::thread([this] ()
+                                      {
+                                          service_.run();
+                                      }));
     }
 
+    ~AsyncRequest()
+    {
+        work_.reset(nullptr);
+        thread_->join();        
+    }
+    
     // disable the copy operations
     AsyncRequest(const AsyncRequest &) = delete;
     AsyncRequest &operator=(const AsyncRequest &) = delete;
@@ -105,6 +118,9 @@ public:
 
         auto &sock = context->socket();
         auto &respBuffer = context->respBuff();
+
+        // shutdown on write
+        sock.shutdown(Socket::shutdown_send);
         
         boost::asio::async_read_until(sock, respBuffer, "\r\n\r\n",
                                       [this, context] (const ErrorCode &err,
@@ -178,8 +194,10 @@ public:
     }
 
 private:
-    IOService  &service_;
-    Resolver   resolver_;
+    IOService                     service_;
+    Resolver                      resolver_;
+    std::unique_ptr<Work>         work_;
+    std::unique_ptr<std::thread>  thread_;
 };
 
 } // namespace requests

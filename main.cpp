@@ -20,12 +20,9 @@ int main(int argc, char *argv[])
         std::cout << "Make request to " << url << std::endl;
         std::cout << "Status Code: " << resp.statusCode() << std::endl;
         std::cout << "Content-Type: " << resp.headers()["Content-Type"] << std::endl;
-
-        boost::asio::io_service service;
-        requests::AsyncRequest asyncRequests(service);
-        
-        asyncRequests.get(url, callback);
-        service.run();            
+ 
+        requests::AsyncRequest asyncRequest;        
+        asyncRequest.get(url, callback);
     }
     catch (const requests::Exception &e)
     {

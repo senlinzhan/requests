@@ -74,7 +74,7 @@ private:
         else
         {
             try {
-                std::stoi(tokens[2]);
+                std::stoi(tokens[1]);
             }
             catch (const std::invalid_argument &e)
             {
