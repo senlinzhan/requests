@@ -1,4 +1,4 @@
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) ![Build status](https://travis-ci.org/senlinzhan/requests.svg?branch=master)
 # requests
 基于 Boost.Asio 实现的 HTTP 客户端网络库，主要特性：
 - 支持发送 GET 请求
