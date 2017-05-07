@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <boost/asio.hpp>
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -66,6 +68,16 @@ std::vector<std::string> splitString(const std::string &str, const std::string &
     return results;    
 }
 
+std::string bufferToString(boost::asio::streambuf &buffer)
+{
+    auto size = buffer.size();
+    auto data = buffer.data();
+        
+    std::string str(boost::asio::buffers_begin(data), boost::asio::buffers_begin(data) + size);
+    buffer.consume(size);
+    return str;
+}
+    
 } // namespace requests
 
 #endif /* UTILS_H */

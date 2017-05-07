@@ -1,6 +1,6 @@
 main: main.o
-	clang++ -std=c++11 -o main main.o -lboost_system  -lpthread
-main.o: main.cpp Request.hpp Response.hpp Utils.hpp
-	clang++ -std=c++11 -c main.cpp
+	clang++ -g -std=c++11 -Wall -o main main.o -lboost_system  -lpthread
+main.o: main.cpp Request.hpp Response.hpp Utils.hpp AsyncRequest.hpp
+	clang++ -g -std=c++11 -Wall -c main.cpp
 clean:
 	rm -f *.o main

@@ -24,13 +24,11 @@ public:
         auto other = splitString(tokens[1], "/", 1);
 
         host_ = std::move(other[0]);        
-        if (other.size() == 1)
+        path_ = "/";
+
+        if (other.size() == 2)
         {
-            path_ = "/";
-        }
-        else
-        {
-            path_ = std::move(other[1]);
+            path_ += std::move(other[1]);
         }
     }
 

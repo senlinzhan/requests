@@ -4,6 +4,7 @@
 #include "Exception.hpp"
 #include "Utils.hpp"
 
+#include <assert.h>
 #include <string>
 #include <unordered_map>
 #include <iostream>
@@ -14,10 +15,13 @@ class Response
 {
 public:
     Response(const std::string &headers, const std::string &content)
-        : headersStr_(headers), content_(content)
+        : headersStr_(headers),
+          content_(content)
     {
         auto lines = splitString(headersStr_, "\r\n");
         auto tokens = splitString(lines[0], " ");
+
+        assert(tokens.size() == 3);
         
         version_ = std::move(tokens[0]);
         statusCode_ = std::stoi(tokens[1]);

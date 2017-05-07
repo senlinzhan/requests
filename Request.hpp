@@ -1,26 +1,29 @@
 #ifndef REQUESTS_H
 #define REQUESTS_H
 
+#include "Exception.hpp"
 #include "Response.hpp"
 #include "Url.hpp"
+#include "Utils.hpp"
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <boost/asio.hpp>
 #include <iostream>
 
-namespace requests {
-    
+namespace requests {    
+
 class Request
 {
 public:
-    using IOService = boost::asio::io_service;
-    using Resolver  = boost::asio::ip::tcp::resolver;
-    using Socket    = boost::asio::ip::tcp::socket;
-    using SocketPtr = std::unique_ptr<Socket>;
-    using ErrorCode = boost::system::error_code;
-    using Buffer    = boost::asio::streambuf;
-    using String    = std::string;
+    using IOService   = boost::asio::io_service;
+    using Resolver    = boost::asio::ip::tcp::resolver;
+    using Socket      = boost::asio::ip::tcp::socket;
+    using SocketPtr   = std::unique_ptr<Socket>;
+    using ErrorCode   = boost::system::error_code;
+    using Buffer      = boost::asio::streambuf;
+    using String      = std::string;
     
     Request() = default;
 
@@ -48,17 +51,48 @@ public:
         }
 
         if (socket == nullptr)
-        { 
+        {
             throw Exception(err.message());            
         }
 
         sendRequestHeaders(socket, url);
-        String headers = readResponseHeaders(socket);
+        return readResponse(socket);
+    }
+            
+private:
+    void sendRequestHeaders(SocketPtr &socket, const Url &url)
+    {
+        Buffer reqBuff;
+        std::ostream reqStream(&reqBuff);
 
-        ErrorCode readErr;
+        reqStream << "GET " << url.path() << " HTTP/1.0\r\n";
+        reqStream << "Host: " << url.host() << "\r\n";
+        reqStream << "Accept: */*\r\n";
+        reqStream << "Connection: close\r\n\r\n";
+        
+        boost::asio::write(*socket, reqBuff);        
+    }
+
+    Response readResponse(SocketPtr &socket)
+    {
         Buffer respBuff;
-        String content;
 
+        // NOTE: the result may contain mutiple "\r\n\r\n"
+        boost::asio::read_until(*socket, respBuff, "\r\n\r\n");
+        
+        auto str = bufferToString(respBuff);
+        auto parts = splitString(str, "\r\n\r\n", 1);
+
+        assert(parts.size() == 1 || parts.size() == 2);
+        
+        String headers, content;
+        headers = std::move(parts[0]);        
+        if (parts.size() == 2)
+        {
+            content = std::move(parts[1]);
+        }
+                
+        ErrorCode readErr;
         while (boost::asio::read(*socket, respBuff,
                                  boost::asio::transfer_at_least(1),
                                  readErr))
@@ -69,44 +103,12 @@ public:
             }
             content += bufferToString(respBuff);
         }
-        
         if (readErr && readErr != boost::asio::error::eof)
         {
-            throw Exception(err.message());
+            throw Exception(readErr.message());
         }
        
         return {std::move(headers), std::move(content)};
-    }
-            
-private:
-    static void sendRequestHeaders(SocketPtr &socket, const Url &url)
-    {
-        Buffer reqBuff;
-        std::ostream reqStream(&reqBuff);
-        
-        reqStream << "GET " << url.path() << " HTTP/1.0\r\n";
-        reqStream << "Host: " << url.host() << "\r\n";
-        reqStream << "Accept: */*\r\n";
-        reqStream << "Connection: close\r\n\r\n";
-        
-        boost::asio::write(*socket, reqBuff);        
-    }
-
-    static String readResponseHeaders(SocketPtr &socket)
-    {
-        Buffer respBuff;
-        std::size_t n = boost::asio::read_until(*socket, respBuff, "\r\n\r\n");
-        return bufferToString(respBuff);        
-    }
-
-    static String bufferToString(Buffer &buffer)
-    {
-        auto size = buffer.size();
-        auto data = buffer.data();
-        
-        String str(boost::asio::buffers_begin(data), boost::asio::buffers_begin(data) + size);
-        buffer.consume(size);
-        return str;
     }
     
     IOService service_;
