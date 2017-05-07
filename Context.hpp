@@ -12,7 +12,7 @@ namespace requests {
 class Context;
 
 using ContextPtr = std::shared_ptr<Context>;
-using UserCallback = std::function<void(Response &)>;
+using UserCallback = std::function<void (Response &)>;
     
 class Context
 {
@@ -21,7 +21,6 @@ public:
     using Socket     = boost::asio::ip::tcp::socket;
     using Buffer     = boost::asio::streambuf;
     using String     = std::string;
-
     
     Context(IOService &service, const Url &url, const UserCallback &callback)
         : sock_(service),

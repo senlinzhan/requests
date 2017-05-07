@@ -1,8 +1,11 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg) 
 # requests
-基于 Boost.Asio 实现的 HTTP 客户端网络库
+基于 Boost.Asio 实现的 HTTP 客户端网络库，主要特性：
+- 支持发送 GET 请求
+- 支持同步和异步发送请求
 
 ## 快速上手
+#### 同步发送请求
 ```C++
 #include "Request.hpp"
 #include <iostream>
@@ -19,6 +22,29 @@ int main()
     std::cout << resp.statusCode() << std::endl;               // 200
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 		
+    return 0;
+}
+```
+#### 异步发送请求
+```C++
+#include "Response.hpp"
+#include "AsyncRequest.hpp"
+#include <iostream>
+
+void callback(requests::Response &resp)
+{
+    std::cout << resp.statusCode() << std::endl;               // 200
+    std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
+}
+
+int main(int argc, char *argv[])
+{
+    requests::AsyncRequest asyncRequest;
+    requests::Url url("http://www.baidu.com");
+
+    // make HTTP request
+    asyncRequest.get(url, callback);
+    
     return 0;
 }
 ```
