@@ -10,7 +10,10 @@ namespace requests {
 class Url
 {
 public:
-    explicit Url(const std::string &url)
+    using String     = std::string;
+    using StringMap  = std::unordered_map<String, String>;
+    
+    explicit Url(const String &url)
         : url_(url)
     {
         auto tokens = splitString(url, "://");        
@@ -35,13 +38,13 @@ public:
             }
             else
             {
-                path_.append(std::move(pathQueries[0]));
+                path_.append(pathQueries[0]);
                 queries_ = std::move(pathQueries[1]);
             }
         }
     }
 
-    void addQueries(const std::unordered_map<std::string, std::string> &params)
+    void addQueries(const StringMap &params)
     {
         auto queries = urlEncode(params);
         if (hasQueries())
@@ -59,7 +62,7 @@ public:
         return !queries_.empty();        
     }
 
-    std::string pathAndQueries() const
+    String pathAndQueries() const
     {
         if (hasQueries())
         {
@@ -68,31 +71,31 @@ public:
         return path_;
     }
     
-    const std::string &host() const
+    const String &host() const
     {
         return host_;
     }
 
-    const std::string &schema() const
+    const String &schema() const
     {
         return schema_;
     }
 
-    const std::string &path() const
+    const String &path() const
     {
         return path_;
     }
 
-    const std::string &queries() const
+    const String &queries() const
     {
         return queries_;
     }
 private:
-    std::string url_;
-    std::string schema_;
-    std::string host_;
-    std::string path_;
-    std::string queries_;
+    String url_;
+    String schema_;
+    String host_;
+    String path_;
+    String queries_;
 };
 
 std::ostream &operator<<(std::ostream &os, const Url &url)

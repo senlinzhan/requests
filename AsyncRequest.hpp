@@ -23,6 +23,7 @@ public:
     using Buffer     = boost::asio::streambuf;
     using String     = std::string;   
     using Work       = IOService::work;
+    using StringMap  = std::unordered_map<String, String>;
     
     AsyncRequest()
         : service_(),
@@ -48,6 +49,14 @@ public:
     // enable the move operations
     AsyncRequest(AsyncRequest &&) = default;
     AsyncRequest &operator=(AsyncRequest &&) = delete;
+
+    void get(const Url &url, const StringMap &params, const UserCallback &callback)
+    {
+        auto newUrl = url;
+        newUrl.addQueries(params);
+        
+        return get(newUrl, callback);
+    }
     
     void get(const Url &url, const UserCallback &callback)
     {
