@@ -24,6 +24,7 @@ public:
     using ErrorCode   = boost::system::error_code;
     using Buffer      = boost::asio::streambuf;
     using String      = std::string;
+    using StringMap   = std::unordered_map<String, String>;
     
     Request()
         : service_(),
@@ -38,11 +39,19 @@ public:
     // enable the move operations
     Request(Request &&) = default;
     Request &operator=(Request &&) = default;
+
+    Response get(const Url &url, const StringMap &params)
+    {
+        auto newUrl = url;
+        newUrl.addQueries(params);
         
+        return get(newUrl);
+    }
+    
     Response get(const Url &url)
     {
         Resolver::query query(url.host(), "http");
-
+        
         ErrorCode err;
         Resolver::iterator iter;        
         Resolver::iterator nullIter;
@@ -77,7 +86,7 @@ private:
         Buffer reqBuff;
         std::ostream reqStream(&reqBuff);
 
-        reqStream << "GET " << url.path() << " HTTP/1.1\r\n";
+        reqStream << "GET " << url.pathAndQueries() << " HTTP/1.1\r\n";
         reqStream << "Host: " << url.host() << "\r\n";
         reqStream << "Accept: */*\r\n";
         reqStream << "Connection: close\r\n\r\n";

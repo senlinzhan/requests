@@ -2,10 +2,10 @@
 #define UTILS_H
 
 #include <boost/asio.hpp>
-
+#include <iostream>
 #include <vector>
 #include <string>
-#include <iostream>
+#include <unordered_map>
 
 namespace requests {
 
@@ -77,7 +77,35 @@ std::string bufferToString(boost::asio::streambuf &buffer)
     buffer.consume(size);
     return str;
 }
+
+std::string join(const std::string &separator, const std::vector<std::string> &strs)
+{
+    std::string result;
+
+    for (int i = 0; i < strs.size(); ++i)
+    {
+        result.append(strs[i]);
+        if (i + 1 < strs.size())
+        {
+            result.append(separator);
+        }
+    }
     
+    return result;
+}
+
+std::string urlEncode(const std::unordered_map<std::string, std::string> &params)
+{
+    std::vector<std::string> querys;
+    
+    for (const auto &pair: params)
+    {
+        querys.push_back(pair.first + "=" + pair.second);
+    }
+    
+    return join("&", querys);
+}
+
 } // namespace requests
 
 #endif /* UTILS_H */

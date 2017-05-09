@@ -10,8 +10,6 @@ namespace requests {
 class Url
 {
 public:
-    friend std::ostream &operator<<(std::ostream &os, const Url &url);
-    
     explicit Url(const std::string &url)
         : url_(url)
     {
@@ -29,10 +27,47 @@ public:
 
         if (other.size() == 2)
         {
-            path_.append(std::move(other[1]));
+            auto pathQueries = splitString(other[1], "?", 1);
+            
+            if (pathQueries.size() == 1)
+            {
+                queries_ = std::move(pathQueries[0]);
+            }
+            else
+            {
+                path_.append(std::move(pathQueries[0]));
+                queries_ = std::move(pathQueries[1]);
+            }
         }
     }
 
+    void addQueries(const std::unordered_map<std::string, std::string> &params)
+    {
+        auto queries = urlEncode(params);
+        if (hasQueries())
+        {
+            queries_.append("&").append(queries);
+        }
+        else
+        {
+            queries_ = std::move(queries);
+        }
+    }
+    
+    bool hasQueries() const
+    {
+        return !queries_.empty();        
+    }
+
+    std::string pathAndQueries() const
+    {
+        if (hasQueries())
+        {
+            return path_ + "?" + queries_;
+        }
+        return path_;
+    }
+    
     const std::string &host() const
     {
         return host_;
@@ -47,17 +82,22 @@ public:
     {
         return path_;
     }
-    
+
+    const std::string &queries() const
+    {
+        return queries_;
+    }
 private:
     std::string url_;
     std::string schema_;
     std::string host_;
-    std::string path_;    
+    std::string path_;
+    std::string queries_;
 };
 
 std::ostream &operator<<(std::ostream &os, const Url &url)
 {
-    os << url.url_;
+    os << url.schema() + "://" + url.host() + url.pathAndQueries() << std::endl;
     return os;
 }
     
