@@ -25,6 +25,8 @@ public:
     using Buffer      = boost::asio::streambuf;
     using String      = std::string;
     using StringMap   = std::unordered_map<String, String>;
+
+    enum class Method { Get, Post };
     
     Request()
         : service_(),
@@ -47,17 +49,38 @@ public:
         
         return get(newUrl);
     }
-    
+
     Response get(const Url &url)
     {
-        Resolver::query query(url.host(), "http");
+        auto socket = createSocket(url);        
+        sendRequestHeaders(socket, url, Method::Get);
         
+        return readResponse(socket);
+    }
+    
+    Response post(const Url &url, const StringMap &data)
+    {
+        if (url.hasQueries())
+        {
+            throw Exception("Data to post could not in the url: " + url.toString());
+        }
+        
+        auto socket = createSocket(url);
+        sendRequestHeaders(socket, url, Method::Post);
+        sendRequestBody(socket, data);
+        return readResponse(socket);
+    }
+            
+private:
+    SocketPtr createSocket(const Url &url)
+    {        
+        Resolver::query query(url.host(), url.port());
+         
         ErrorCode err;
         Resolver::iterator iter;        
         Resolver::iterator nullIter;
 
         SocketPtr socket = nullptr;
-        
         for (iter = resolver_.resolve(query); iter != nullIter; ++iter)
         {
             auto endpoint = iter->endpoint();
@@ -69,34 +92,54 @@ public:
                 break;
             }
         }
-
         if (socket == nullptr)
         {
-            throw Exception(err.message());            
+            throw Exception("Resolve host " + url.host() + " error: " + err.message());            
         }
-
-        sendRequestHeaders(socket, url);
         
-        return readResponse(socket);
+        return socket;
     }
-            
-private:
-    void sendRequestHeaders(SocketPtr &socket, const Url &url)
+     
+    void sendRequestHeaders(SocketPtr &socket, const Url &url, Method method)
     {
         Buffer reqBuff;
         std::ostream reqStream(&reqBuff);
 
-        reqStream << "GET " << url.pathAndQueries() << " HTTP/1.1\r\n";
-        reqStream << "Host: " << url.host() << "\r\n";
-        reqStream << "Accept: */*\r\n";
-        reqStream << "Connection: close\r\n\r\n";
-        
+        if (method == Method::Get)
+        {
+            reqStream << "GET " << url.pathAndQueries() << " HTTP/1.1\r\n";
+            reqStream << "Host: " << url.host() << "\r\n";
+            reqStream << "Accept: */*\r\n";
+            reqStream << "Connection: close\r\n\r\n";
+            
+            boost::asio::write(*socket, reqBuff);
+
+            // shutdown on write
+            socket->shutdown(Socket::shutdown_send);            
+        }
+        else if (method == Method::Post)
+        {
+            reqStream << "POST " << url.path() << " HTTP/1.1\r\n";
+            reqStream << "Host: " << url.host() << "\r\n";
+            reqStream << "Content-Type: application/x-www-form-urlencoded;charset=utf-8\r\n\r\n";
+
+            boost::asio::write(*socket, reqBuff);            
+        }
+    }
+
+    void sendRequestBody(SocketPtr &socket, const StringMap &data)
+    {
+        Buffer reqBuff;
+        std::ostream reqStream(&reqBuff);
+
+        reqStream << urlEncode(data);
+
         boost::asio::write(*socket, reqBuff);
 
         // shutdown on write
-        socket->shutdown(Socket::shutdown_send);        
+        socket->shutdown(Socket::shutdown_send);                    
     }
-
+    
     Response readResponse(SocketPtr &socket)
     {
         Buffer respBuff;
@@ -125,6 +168,7 @@ private:
             }
             content += bufferToString(respBuff);
         }
+        
         if (readErr && readErr != boost::asio::error::eof)
         {
             throw Exception(readErr.message());

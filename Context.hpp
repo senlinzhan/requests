@@ -97,11 +97,6 @@ public:
     {
         content_.append(content);
     }
-
-    void appendContent(String &&content)
-    {
-        content_.append(std::move(content));
-    }
     
     void handleResponse()
     {

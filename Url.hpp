@@ -14,7 +14,8 @@ public:
     using StringMap  = std::unordered_map<String, String>;
     
     explicit Url(const String &url)
-        : url_(url)
+        : url_(url),
+          port_("80")
     {
         auto tokens = splitString(url, "://");        
         if (tokens.size() != 2)
@@ -23,9 +24,22 @@ public:
         }
         
         schema_ = std::move(tokens[0]);
+
         auto other = splitString(tokens[1], "/", 1);
 
-        host_ = std::move(other[0]);        
+        auto hostAndPort = splitString(other[0], ":");
+        if (hostAndPort.size() != 1 && hostAndPort.size() != 2)
+        {
+            throw Exception("Invalid Host and Port: " + other[0]);
+        }        
+
+        host_ = std::move(hostAndPort[0]);
+
+        if (hostAndPort.size() == 2)
+        {
+            port_ = std::move(hostAndPort[1]);
+        }
+
         path_ = "/";
 
         if (other.size() == 2)
@@ -76,6 +90,11 @@ public:
         return host_;
     }
 
+    const String &port() const
+    {
+        return port_;
+    }
+    
     const String &schema() const
     {
         return schema_;
@@ -90,17 +109,24 @@ public:
     {
         return queries_;
     }
+
+    String toString() const
+    {
+        return schema() + "://" + host() + pathAndQueries();
+    }
+    
 private:
-    String url_;
-    String schema_;
-    String host_;
-    String path_;
-    String queries_;
+    String         url_;
+    String         schema_;
+    String         host_;
+    String         port_;
+    String         path_;
+    String         queries_;    
 };
 
 std::ostream &operator<<(std::ostream &os, const Url &url)
 {
-    os << url.schema() + "://" + url.host() + url.pathAndQueries() << std::endl;
+    os << url.toString() << std::endl;
     return os;
 }
     
