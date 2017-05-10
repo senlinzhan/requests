@@ -48,29 +48,43 @@ public:
 
     // enable the move operations
     AsyncRequest(AsyncRequest &&) = default;
-    AsyncRequest &operator=(AsyncRequest &&) = delete;
+    AsyncRequest &operator=(AsyncRequest &&) = default;
 
-    void get(const Url &url, const StringMap &params, const UserCallback &callback)
-    {
-        auto newUrl = url;
-        newUrl.addQueries(params);
-        
-        return get(newUrl, callback);
-    }
-    
     void get(const Url &url, const UserCallback &callback)
     {
-        Resolver::query query(url.host(), "http");
-
-        auto context = std::make_shared<Context>(service_, url, callback);        
+        // empty query parameters
+        StringMap params;
+        
+        return get(url, params, callback);
+    }
+    
+    void get(const Url &url, const StringMap &params, const UserCallback &callback)
+    {
+        Resolver::query query(url.host(), url.port());
+        
+        auto context = std::make_shared<Context>(service_, url, Context::Method::Get, params, callback);        
         
         resolver_.async_resolve(query,
                                 [this, context] (const ErrorCode &err, Resolver::iterator iter)
                                 {
                                     handleResolve(err, iter, context);
-                                });        
-    }
+                                });                
+    }    
 
+    void post(const Url &url, const StringMap &data, const UserCallback &callback)
+    {
+        Resolver::query query(url.host(), url.port());
+
+        auto context = std::make_shared<Context>(service_, url, Context::Method::Post, data, callback);        
+        
+        resolver_.async_resolve(query,
+                                [this, context] (const ErrorCode &err, Resolver::iterator iter)
+                                {
+                                    handleResolve(err, iter, context);
+                                });                        
+    }
+    
+private:    
     void handleResolve(const ErrorCode &err, Resolver::iterator iter, ContextPtr context)
     {
         if (err)
@@ -202,7 +216,6 @@ public:
                                 });
     }
 
-private:
     IOService                     service_;
     Resolver                      resolver_;
     std::unique_ptr<Work>         work_;

@@ -16,13 +16,13 @@ int main(int argc, char *argv[])
         requests::Request request;
         requests::Url url("http://www.baidu.com");
 
-
-        std::cout << "Make request to " << url << std::endl;
-        
+        std::cout << "Make request to " << url << std::endl;        
         auto resp = request.get(url, {{"sx", "cdcd"}});
+        
         std::cout << "Status Code: " << resp.statusCode() << std::endl;
         std::cout << "Content-Type: " << resp.headers()["Content-Type"] << std::endl;
-        requests::AsyncRequest asyncRequest;        
+        
+        requests::AsyncRequest asyncRequest;
         asyncRequest.get(url, callback);
     }
     catch (const requests::Exception &e)

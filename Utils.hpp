@@ -105,7 +105,7 @@ std::string urlEncode(const std::unordered_map<std::string, std::string> &params
     
     return join("&", querys);
 }
-
+    
 } // namespace requests
 
 #endif /* UTILS_H */
