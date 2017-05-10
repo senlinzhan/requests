@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -96,11 +97,32 @@ std::string join(const std::string &separator, const std::vector<std::string> &s
 
 std::string urlEncode(const std::unordered_map<std::string, std::string> &params)
 {
+    auto encode = [] (const std::string &str)
+        {
+            std::ostringstream escaped;
+            escaped.fill('0');
+            escaped << std::hex;
+            
+            for (auto c: str)
+            {
+                if (std::isalnum(c) || c  == '-' || c == '_' || c == '.' || c == '~')
+                {
+                    escaped << c;
+                    continue;
+                }
+                escaped << '%' << std::setw(2) << int((unsigned char) c);
+            }
+            return escaped.str();
+        };
+    
     std::vector<std::string> querys;
     
     for (const auto &pair: params)
     {
-        querys.push_back(pair.first + "=" + pair.second);
+        auto key = encode(pair.first);
+        auto value = encode(pair.second);
+        
+        querys.push_back(key + "=" + value);
     }
     
     return join("&", querys);
