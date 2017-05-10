@@ -84,7 +84,7 @@ private:
 
         if (invalidFormat)
         {
-            throw Exception("Status message in server response headers is invalid");            
+            throw Exception("Status message in server response headers is invalid: " + statusLine);            
         }
 
         version_ = std::move(tokens[0]);
@@ -101,7 +101,7 @@ private:
             throw Exception("Server response contains invalid header");
         }
 
-        headers_[std::move(tokens[0])] = std::move(tokens[1]);
+        headers_[tokens[0]] = tokens[1];
     }
     
     String                               headersStr_;
