@@ -103,7 +103,6 @@ private:
                            });
     }
 
-
     void handleConnect(const ErrorCode &err, Resolver::iterator iter, ContextPtr context)
     {
         auto &sock = context->socket();

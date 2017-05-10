@@ -46,12 +46,7 @@ public:
     Response get(const Url &url, const StringMap &params)
     {
         Context context(service_, url, Context::Method::Get, params);
-
-        syncResolve(context);
-
-        syncSendRequest(context);
-
-        syncReadResponse(context);
+        makeHttpRequest(context);        
         
         return context.getResponse();
     }
@@ -59,10 +54,7 @@ public:
     void get(const Url &url, const StringMap &params, const UserCallback &callback)
     {
         Context context(service_, url, Context::Method::Get, params, callback);
-
-        syncResolve(context);
-        syncSendRequest(context);
-        syncReadResponse(context);
+        makeHttpRequest(context);
         
         context.handleResponse();
     }
@@ -77,10 +69,7 @@ public:
     Response post(const Url &url, const StringMap &data)
     {
         Context context(service_, url, Context::Method::Post, data);
-
-        syncResolve(context);
-        syncSendRequest(context);
-        syncReadResponse(context);
+        makeHttpRequest(context);        
         
         return context.getResponse();
     }
@@ -88,15 +77,21 @@ public:
     void post(const Url &url, const StringMap &data, const UserCallback &callback)
     {
         Context context(service_, url, Context::Method::Post, data, callback);
-
-        syncResolve(context);
-        syncSendRequest(context);
-        syncReadResponse(context);
-
+        makeHttpRequest(context);
+        
         context.handleResponse();
     }
             
 private:
+    // make HTTP request and read response
+    void makeHttpRequest(Context &context)
+    {
+        syncResolve(context);
+        syncSendRequest(context);
+        syncReadResponse(context);        
+    }
+
+    // resolve domain name synchronously
     void syncResolve(Context &context)
     {
         auto &url = context.url();
@@ -134,6 +129,7 @@ private:
         }        
     }
 
+    // send HTTP request headers and body synchronously
     void syncSendRequest(Context &context)
     {
         auto &sock = context.socket();
@@ -145,6 +141,7 @@ private:
         sock.shutdown(Socket::shutdown_send);        
     }
 
+    // read HTTP response synchronously
     void syncReadResponse(Context &context)
     {
         auto &sock = context.socket();
