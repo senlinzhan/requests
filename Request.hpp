@@ -26,8 +26,6 @@ public:
     using Buffer      = boost::asio::streambuf;
     using String      = std::string;
     using StringMap   = std::unordered_map<String, String>;
-
-    enum class Method { Get, Post };
     
     Request()
         : service_(),
@@ -119,7 +117,7 @@ private:
                 sock.close();
                 continue;
             }
-
+            
             break;
         }
 
@@ -155,7 +153,6 @@ private:
         
         auto headers = std::move(parts[0]);
         context.setHeaders(std::move(headers));
-
         
         if (parts.size() == 2)
         {
