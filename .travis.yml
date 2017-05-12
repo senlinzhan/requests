@@ -8,6 +8,8 @@ compiler:
 
 # Build steps
 script:
+  - cd build
+  - cmake
   - make
 
 sudo: required
@@ -24,3 +26,4 @@ addons:
     - g++-5
     - clang-3.6
     - libboost1.55-all-dev
+    - cmake

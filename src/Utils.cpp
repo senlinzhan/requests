@@ -1,16 +1,9 @@
-#ifndef UTILS_H
-#define UTILS_H
+#include "Utils.hpp"
 
-#include <boost/asio.hpp>
 #include <iostream>
 #include <iomanip>
-#include <vector>
-#include <string>
-#include <unordered_map>
 
-namespace requests {
-
-std::vector<std::string> splitString(const std::string &str, const std::string &separator)
+std::vector<std::string> requests::splitString(const std::string &str, const std::string &separator)
 {
     std::vector<std::string> results;
 
@@ -34,7 +27,7 @@ std::vector<std::string> splitString(const std::string &str, const std::string &
     return results;    
 }
 
-std::vector<std::string> splitString(const std::string &str, const std::string &separator, std::size_t splitTimes)
+std::vector<std::string> requests::splitString(const std::string &str, const std::string &separator, std::size_t splitTimes)
 {
     if (splitTimes == 0)
     {
@@ -69,7 +62,7 @@ std::vector<std::string> splitString(const std::string &str, const std::string &
     return results;    
 }
 
-std::string bufferToString(boost::asio::streambuf &buffer)
+std::string requests::bufferToString(boost::asio::streambuf &buffer)
 {
     auto size = buffer.size();
     auto data = buffer.data();
@@ -79,7 +72,7 @@ std::string bufferToString(boost::asio::streambuf &buffer)
     return str;
 }
 
-std::string join(const std::string &separator, const std::vector<std::string> &strs)
+std::string requests::join(const std::string &separator, const std::vector<std::string> &strs)
 {
     std::string result;
 
@@ -95,26 +88,26 @@ std::string join(const std::string &separator, const std::vector<std::string> &s
     return result;
 }
 
-std::string urlEncode(const std::unordered_map<std::string, std::string> &params)
+static std::string encode(const std::string &str)
 {
-    auto encode = [] (const std::string &str)
-        {
-            std::ostringstream escaped;
-            escaped.fill('0');
-            escaped << std::hex;
-            
-            for (auto c: str)
-            {
-                if (std::isalnum(c) || c  == '-' || c == '_' || c == '.' || c == '~')
-                {
-                    escaped << c;
-                    continue;
-                }
-                escaped << '%' << std::setw(2) << int((unsigned char) c);
-            }
-            return escaped.str();
-        };
+    std::ostringstream escaped;
+    escaped.fill('0');
+    escaped << std::hex;
     
+    for (auto c: str)
+    {
+        if (std::isalnum(c) || c  == '-' || c == '_' || c == '.' || c == '~')
+        {
+            escaped << c;
+            continue;
+        }
+        escaped << '%' << std::setw(2) << int((unsigned char) c);
+    }
+    return escaped.str();
+};
+
+std::string requests::urlEncode(const std::unordered_map<std::string, std::string> &params)
+{   
     std::vector<std::string> querys;
     
     for (const auto &pair: params)
@@ -127,7 +120,3 @@ std::string urlEncode(const std::unordered_map<std::string, std::string> &params
     
     return join("&", querys);
 }
-    
-} // namespace requests
-
-#endif /* UTILS_H */

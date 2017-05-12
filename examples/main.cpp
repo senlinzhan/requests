@@ -1,6 +1,8 @@
 #include "Request.hpp"
 #include "Response.hpp"
 #include "AsyncRequest.hpp"
+#include "Url.hpp"
+#include "Exception.hpp"
 
 #include <iostream>
 
