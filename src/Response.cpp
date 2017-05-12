@@ -15,7 +15,7 @@ Response::Response(const String &headers, const String &content)
     auto &statusLine = lines[0];
     splitStatusLine(statusLine);
     
-    for (int i = 1; i < lines.size(); ++i)
+    for (std::size_t i = 1; i < lines.size(); ++i)
     {
         auto &header = lines[i];
         splitHeader(header);

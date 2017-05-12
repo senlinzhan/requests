@@ -76,7 +76,7 @@ std::string requests::join(const std::string &separator, const std::vector<std::
 {
     std::string result;
 
-    for (int i = 0; i < strs.size(); ++i)
+    for (std::size_t i = 0; i < strs.size(); ++i)
     {
         result.append(strs[i]);
         if (i + 1 < strs.size())
