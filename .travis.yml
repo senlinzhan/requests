@@ -9,7 +9,7 @@ compiler:
 # Build steps
 script:
   - cd build
-  - cmake
+  - cmake ..
   - make
 
 sudo: required
