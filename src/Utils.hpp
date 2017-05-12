@@ -6,17 +6,17 @@
 #include <string>
 #include <unordered_map>
 
-namespace requests
-{
-    std::vector<std::string> splitString(const std::string &str, const std::string &separator);
+namespace requests {
 
-    std::vector<std::string> splitString(const std::string &str, const std::string &separator, std::size_t splitTimes);
-
-    std::string bufferToString(boost::asio::streambuf &buffer);
-
-    std::string join(const std::string &separator, const std::vector<std::string> &strs);
+std::vector<std::string> splitString(const std::string &str, const std::string &separator);
     
-    std::string urlEncode(const std::unordered_map<std::string, std::string> &params);
+std::vector<std::string> splitString(const std::string &str, const std::string &separator, std::size_t splitTimes);
+
+std::string bufferToString(boost::asio::streambuf &buffer);
+
+std::string join(const std::string &separator, const std::vector<std::string> &strs);
+    
+std::string urlEncode(const std::unordered_map<std::string, std::string> &params);
     
 } // namespace requests
 

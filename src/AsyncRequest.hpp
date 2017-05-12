@@ -27,7 +27,6 @@ public:
     using ContextPtr = std::shared_ptr<Context>;
     
     AsyncRequest();
-
     ~AsyncRequest();
 
     // disable the copy operations
@@ -55,10 +54,10 @@ private:
 
     void handleReadBody(const ErrorCode &err, ContextPtr context);
 
-    IOService                     service_;
-    Resolver                      resolver_;
-    std::unique_ptr<Work>         work_;
-    std::unique_ptr<std::thread>  thread_;
+    IOService                       service_;
+    Resolver                        resolver_;
+    std::unique_ptr<Work>           work_;
+    std::unique_ptr<std::thread>    thread_;
 };
 
 } // namespace requests

@@ -3,11 +3,12 @@
 
 #include <functional>
 
-namespace requests
-{
-    class Response;
+namespace requests {
+
+class Response;
     
-    using UserCallback = std::function<void (Response &)>;
+using UserCallback = std::function<void (Response &)>;
+
 };
 
 

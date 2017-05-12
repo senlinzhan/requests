@@ -3,7 +3,6 @@
 
 #include "Callback.hpp"
 #include "Response.hpp"
-#include "Url.hpp"
 
 #include <boost/asio.hpp>
 #include <iostream>
@@ -13,6 +12,7 @@
 
 namespace requests {    
 
+class Url;
 class Context;
    
 class Request

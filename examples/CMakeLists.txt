@@ -2,10 +2,10 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src)
 
 LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/src)
 
-ADD_EXECUTABLE(UtilsTest UtilsTest.cpp)
+ADD_EXECUTABLE(SyncRequest SyncRequest.cpp)
 
-TARGET_LINK_LIBRARIES(UtilsTest requests ${Boost_SYSTEM_LIBRARY})
+TARGET_LINK_LIBRARIES(SyncRequest requests ${Boost_SYSTEM_LIBRARY})
 
-ADD_EXECUTABLE(main main.cpp)
+ADD_EXECUTABLE(AsyncRequest AsyncRequest.cpp)
 
-TARGET_LINK_LIBRARIES(main requests ${Boost_SYSTEM_LIBRARY})
+TARGET_LINK_LIBRARIES(AsyncRequest requests ${Boost_SYSTEM_LIBRARY})
