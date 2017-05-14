@@ -7,8 +7,7 @@ compiler:
   - gcc
 
 before_install:
- - sudo apt-get -qq update
- - sudo apt-get install -y libgtest-dev valgrind
+ - sudo apt-get install -y libgtest-dev
  - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
  - sudo tar xf release-1.7.0.tar.gz
  - cd googletest-release-1.7.0
@@ -16,9 +15,7 @@ before_install:
  - sudo make
  - sudo cp -a include/gtest /usr/include
  - sudo cp -a libgtest_main.so libgtest.so /usr/lib/
- - which valgrind
  - cd "${TRAVIS_BUILD_DIR}"
-
 
 # Build steps
 script:
