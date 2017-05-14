@@ -41,7 +41,7 @@ void callback(requests::Response &resp)
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     requests::AsyncRequest asyncRequest;
     requests::Url url("http://www.baidu.com");
