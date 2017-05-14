@@ -2,10 +2,14 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
 
 LINK_DIRECTORIES(${PROJECT_BINARY_DIR}/requests)
 
-ADD_EXECUTABLE(SyncRequest SyncRequest.cpp)
 
-TARGET_LINK_LIBRARIES(SyncRequest requests ${Boost_SYSTEM_LIBRARY} pthread)
+add_executable(SyncRequest SyncRequest.cpp)
+target_link_libraries(SyncRequest requests)
+target_link_libraries(SyncRequest ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(SyncRequest ${Boost_SYSTEM_LIBRARY})
 
-ADD_EXECUTABLE(AsyncRequest AsyncRequest.cpp)
 
-TARGET_LINK_LIBRARIES(AsyncRequest requests ${Boost_SYSTEM_LIBRARY} pthread)
+add_executable(AsyncRequest AsyncRequest.cpp)
+target_link_libraries(AsyncRequest requests)
+target_link_libraries(AsyncRequest ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(AsyncRequest ${Boost_SYSTEM_LIBRARY})
