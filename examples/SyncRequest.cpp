@@ -1,6 +1,5 @@
-#include "Url.hpp"
-#include "Request.hpp"
-
+#include <requests/Url.hpp>
+#include <requests/Request.hpp>
 #include <iostream>
 
 int main()

@@ -8,9 +8,8 @@
 ## 快速上手
 #### 同步发送请求
 ```C++
-#include "Url.hpp"
-#include "Request.hpp"
-
+#include <requests/Url.hpp>
+#include <requests/Request.hpp>
 #include <iostream>
 
 int main()
@@ -30,10 +29,9 @@ int main()
 ```
 #### 异步发送请求
 ```C++
-#include "Url.hpp"
-#include "Response.hpp"
-#include "AsyncRequest.hpp"
-
+#include <requests/Url.hpp>
+#include <requests/Response.hpp>
+#include <requests/AsyncRequest.hpp>
 #include <iostream>
 
 // 用户提供的回调函数

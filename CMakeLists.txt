@@ -5,8 +5,9 @@ project(requests)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 find_package(Boost COMPONENTS system REQUIRED)
+find_package(GTest REQUIRED)
 
-set(SUBDIRS src examples)
+set(SUBDIRS requests examples test)
  
 foreach(dir ${SUBDIRS})
     add_subdirectory(${dir})
