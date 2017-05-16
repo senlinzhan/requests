@@ -15,12 +15,10 @@
 int main()
 {
     requests::Request request;
-    requests::Url url("http://www.baidu.com");
     
     // 发起 HTTP 请求，阻塞
-    auto resp = request.get(url);
+    auto resp = request.get(requests::Url("http://www.baidu.com"));
 	
-    std::cout << url << std::endl;                             // http://www.baidu.com
     std::cout << resp.statusCode() << std::endl;               // 200
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 		
@@ -44,10 +42,9 @@ void callback(requests::Response &resp)
 int main()
 {
     requests::AsyncRequest asyncRequest;
-    requests::Url url("http://www.baidu.com");
 
     // 发起 HTTP 请求，非阻塞
-    asyncRequest.get(url, callback);
+    asyncRequest.get(requests::Url("http://www.baidu.com"), callback);
     
     return 0;
 }

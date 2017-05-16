@@ -13,10 +13,9 @@ void callback(requests::Response &resp)
 int main()
 {
     requests::AsyncRequest asyncRequest;
-    requests::Url url("http://www.baidu.com");
 
     // 发起 HTTP 请求，非阻塞
-    asyncRequest.get(url, callback);
+    asyncRequest.get(requests::Url("http://www.baidu.com"), callback);
     
     return 0;
 }

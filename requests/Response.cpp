@@ -1,6 +1,6 @@
-#include "Exception.hpp"
-#include "Response.hpp"
-#include "Utils.hpp"
+#include <requests/Exception.hpp>
+#include <requests/Response.hpp>
+#include <requests/Utils.hpp>
 
 #include <iostream>
 

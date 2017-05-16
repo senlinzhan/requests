@@ -1,6 +1,6 @@
-#include "Context.hpp"
-#include "Utils.hpp"
-#include "Exception.hpp"
+#include <requests/Context.hpp>
+#include <requests/Utils.hpp>
+#include <requests/Exception.hpp>
 
 using namespace requests;
 

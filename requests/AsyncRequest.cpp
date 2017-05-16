@@ -1,8 +1,8 @@
-#include "AsyncRequest.hpp"
-#include "Context.hpp"
-#include "Exception.hpp"
-#include "Url.hpp"
-#include "Utils.hpp"
+#include <requests/AsyncRequest.hpp>
+#include <requests/Context.hpp>
+#include <requests/Exception.hpp>
+#include <requests/Url.hpp>
+#include <requests/Utils.hpp>
 
 #include <iostream>
 

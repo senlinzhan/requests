@@ -1,6 +1,6 @@
-#include "Exception.hpp"
-#include "Url.hpp"
-#include "Utils.hpp"
+#include <requests/Exception.hpp>
+#include <requests/Url.hpp>
+#include <requests/Utils.hpp>
 
 using namespace requests;
 

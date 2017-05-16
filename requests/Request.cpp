@@ -1,8 +1,8 @@
-#include "Context.hpp"
-#include "Exception.hpp"
-#include "Request.hpp"
-#include "Url.hpp"
-#include "Utils.hpp"
+#include <requests/Context.hpp>
+#include <requests/Exception.hpp>
+#include <requests/Request.hpp>
+#include <requests/Url.hpp>
+#include <requests/Utils.hpp>
 
 using namespace requests;
 

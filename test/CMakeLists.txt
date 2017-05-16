@@ -1,4 +1,6 @@
-include_directories(${GTEST_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR})
+enable_testing()
+
+include_directories(${GTEST_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/include)
 
 link_directories(${PROJECT_BINARY_DIR}/requests)
 

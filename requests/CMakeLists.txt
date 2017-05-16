@@ -1,5 +1,8 @@
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+
 set(SRCS
     Utils.cpp
+    Exception.cpp
     Url.cpp
     Response.cpp
     Context.cpp
