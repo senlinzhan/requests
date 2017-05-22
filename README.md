@@ -9,8 +9,9 @@
 #### 同步发送请求
 ```C++
 #include <requests/Exception.hpp>
-#include <requests/Url.hpp>
 #include <requests/Request.hpp>
+#include <requests/Url.hpp>
+
 #include <iostream>
 
 int main()
@@ -23,11 +24,11 @@ int main()
         // 发起 HTTP 请求，阻塞
         auto resp = request.get(url);
         std::cout << resp.statusCode() << std::endl;               // 200
-        std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html        
+        std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
     }
     catch (requests::Exception &e)
     {
-        std::cout << e.what() << std::endl;        
+        std::cout << e.what() << std::endl;
     }	
 		
     return 0;
@@ -35,10 +36,11 @@ int main()
 ```
 #### 异步发送请求
 ```C++
-#include <requests/Exception.hpp>
-#include <requests/Url.hpp>
-#include <requests/Response.hpp>
 #include <requests/AsyncRequest.hpp>
+#include <requests/Exception.hpp>
+#include <requests/Response.hpp>
+#include <requests/Url.hpp>
+
 #include <iostream>
 
 // 用户提供的回调函数
@@ -48,6 +50,7 @@ void callback(requests::Response &resp)
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 }
 
+// 错误处理函数
 void errorCallback(requests::Exception &e)
 {
     std::cout << e.what() << std::endl;

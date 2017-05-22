@@ -1,7 +1,8 @@
-#include <requests/Exception.hpp>
-#include <requests/Url.hpp>
-#include <requests/Response.hpp>
 #include <requests/AsyncRequest.hpp>
+#include <requests/Exception.hpp>
+#include <requests/Response.hpp>
+#include <requests/Url.hpp>
+
 #include <iostream>
 
 // 用户提供的回调函数
@@ -11,6 +12,7 @@ void callback(requests::Response &resp)
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 }
 
+// 错误处理函数
 void errorCallback(requests::Exception &e)
 {
     std::cout << e.what() << std::endl;    

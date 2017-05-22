@@ -1,6 +1,7 @@
 #include <requests/Exception.hpp>
-#include <requests/Url.hpp>
 #include <requests/Request.hpp>
+#include <requests/Url.hpp>
+
 #include <iostream>
 
 int main()
