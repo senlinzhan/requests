@@ -37,11 +37,11 @@ public:
     AsyncRequest(AsyncRequest &&) = default;
     AsyncRequest &operator=(AsyncRequest &&) = default;
 
-    void get(const Url &url, const UserCallback &callback);
+    void get(const Url &url, UserCallback cb, ErrorCallback errorCb);
     
-    void get(const Url &url, const StringMap &params, const UserCallback &callback);
+    void get(const Url &url, const StringMap &params, UserCallback cb, ErrorCallback errorCb);
 
-    void post(const Url &url, const StringMap &data, const UserCallback &callback);
+    void post(const Url &url, const StringMap &data, UserCallback cb, ErrorCallback errorCb);
     
 private:    
     void handleResolve(const ErrorCode &err, Resolver::iterator iter, ContextPtr context);

@@ -5,14 +5,15 @@
 using namespace requests;
 
 Context::Context(IOService &service, const Url &url, Method method, const StringMap &data)
-    : Context(service, url, method, data, UserCallback())
+    : Context(service, url, method, data, UserCallback(), ErrorCallback())
 {        
 }        
     
-Context::Context(IOService &service, const Url &url, Method method, const StringMap &data, const UserCallback &callback)
+Context::Context(IOService &service, const Url &url, Method method, const StringMap &data, UserCallback cb, ErrorCallback errorCb)
     : sock_(service),
       url_(url),
-      callback_(callback),
+      callback_(cb),
+      errorCallback_(errorCb),
       method_(method)
 {
     std::ostream reqStream(&requestBuff_);

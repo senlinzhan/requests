@@ -8,6 +8,7 @@
 ## 快速上手
 #### 同步发送请求
 ```C++
+#include <requests/Exception.hpp>
 #include <requests/Url.hpp>
 #include <requests/Request.hpp>
 #include <iostream>
@@ -15,18 +16,26 @@
 int main()
 {
     requests::Request request;
+    requests::Url url("http://www.baidu.com");
     
-    // 发起 HTTP 请求，阻塞
-    auto resp = request.get(requests::Url("http://www.baidu.com"));
-	
-    std::cout << resp.statusCode() << std::endl;               // 200
-    std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
+    try
+    {
+        // 发起 HTTP 请求，阻塞
+        auto resp = request.get(url);
+        std::cout << resp.statusCode() << std::endl;               // 200
+        std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html        
+    }
+    catch (requests::Exception &e)
+    {
+        std::cout << e.what() << std::endl;        
+    }	
 		
     return 0;
 }
 ```
 #### 异步发送请求
 ```C++
+#include <requests/Exception.hpp>
 #include <requests/Url.hpp>
 #include <requests/Response.hpp>
 #include <requests/AsyncRequest.hpp>
@@ -39,12 +48,18 @@ void callback(requests::Response &resp)
     std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
 }
 
+void errorCallback(requests::Exception &e)
+{
+    std::cout << e.what() << std::endl;
+}
+
 int main()
 {
     requests::AsyncRequest asyncRequest;
-
+    requests::Url url("http://www.baidu.com");
+    
     // 发起 HTTP 请求，非阻塞
-    asyncRequest.get(requests::Url("http://www.baidu.com"), callback);
+    asyncRequest.get(url, callback, errorCallback);
     
     return 0;
 }

@@ -37,16 +37,11 @@ public:
     Request(Request &&) = default;
     Request &operator=(Request &&) = default;
 
-    Response get(const Url &url, const StringMap &params);
-
-    void get(const Url &url, const StringMap &params, const UserCallback &callback);
-    
     Response get(const Url &url);
     
-    Response post(const Url &url, const StringMap &data);
-
-    void post(const Url &url, const StringMap &data, const UserCallback &callback);
-            
+    Response get(const Url &url, const StringMap &params);
+    
+    Response post(const Url &url, const StringMap &data);            
 private:
     // make HTTP request and read response
     void makeHttpRequest(Context &context);

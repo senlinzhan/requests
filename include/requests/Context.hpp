@@ -24,7 +24,7 @@ public:
 
     Context(IOService &service, const Url &url, Method method, const StringMap &data);
     
-    Context(IOService &service, const Url &url, Method method, const StringMap &data, const UserCallback &callback);
+    Context(IOService &service, const Url &url, Method method, const StringMap &data, UserCallback cb, ErrorCallback errorCb);
 
     // disable the copy operations
     Context(const Context &) = delete;
@@ -97,6 +97,13 @@ public:
         callback_(resp);
     }    
 
+    void handleError(Exception &e)
+    {
+        assert(errorCallback_);
+
+        errorCallback_(e);        
+    }
+    
     Response getResponse()
     {
         assert(!callback_);
@@ -109,6 +116,7 @@ private:
     Socket        sock_;
     Url           url_;
     UserCallback  callback_;
+    ErrorCallback errorCallback_;    
     Method        method_;
     Buffer        requestBuff_;
     Buffer        responseBuff_;

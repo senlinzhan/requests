@@ -12,6 +12,13 @@ Request::Request()
 {        
 }
 
+Response Request::get(const Url &url)
+{
+    StringMap emptyParams;
+
+    return get(url, emptyParams);
+}
+
 Response Request::get(const Url &url, const StringMap &params)
 {
     Context context(service_, url, Context::Method::Get, params);
@@ -20,21 +27,6 @@ Response Request::get(const Url &url, const StringMap &params)
     return context.getResponse();
 }
 
-void Request::get(const Url &url, const StringMap &params, const UserCallback &callback)
-{
-    Context context(service_, url, Context::Method::Get, params, callback);
-    makeHttpRequest(context);
-        
-    context.handleResponse();
-}
-    
-Response Request::get(const Url &url)
-{
-    StringMap emptyParams;
-
-    return get(url, emptyParams);
-}
-    
 Response Request::post(const Url &url, const StringMap &data)
 {
     Context context(service_, url, Context::Method::Post, data);
@@ -43,14 +35,6 @@ Response Request::post(const Url &url, const StringMap &data)
     return context.getResponse();
 }
 
-void Request::post(const Url &url, const StringMap &data, const UserCallback &callback)
-{
-    Context context(service_, url, Context::Method::Post, data, callback);
-    makeHttpRequest(context);
-        
-    context.handleResponse();
-}
-            
 // make HTTP request and read response
 void Request::makeHttpRequest(Context &context)
 {

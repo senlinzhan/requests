@@ -3,7 +3,6 @@
 #include <requests/Exception.hpp>
 #include <requests/Url.hpp>
 #include <requests/Utils.hpp>
-
 #include <iostream>
 
 using namespace requests;
@@ -24,21 +23,21 @@ AsyncRequest::~AsyncRequest()
     work_.reset(nullptr);
     thread_->join();        
 }
-    
-void AsyncRequest::get(const Url &url, const UserCallback &callback)
+
+void AsyncRequest::get(const Url &url, UserCallback cb, ErrorCallback errorCb)
 {
     // empty query parameters
     StringMap params;
         
-    return get(url, params, callback);
+    return get(url, params, cb, errorCb);
 }
     
-void AsyncRequest::get(const Url &url, const StringMap &params, const UserCallback &callback)
+void AsyncRequest::get(const Url &url, const StringMap &params, UserCallback cb, ErrorCallback errorCb)
 {
     Resolver::query query(url.host(), url.port());
         
-    auto context = std::make_shared<Context>(service_, url, Context::Method::Get, params, callback);        
-        
+    auto context = std::make_shared<Context>(service_, url, Context::Method::Get, params, cb, errorCb);        
+    
     resolver_.async_resolve(query,
                             [this, context] (const ErrorCode &err, Resolver::iterator iter)
                             {
@@ -46,11 +45,11 @@ void AsyncRequest::get(const Url &url, const StringMap &params, const UserCallba
                             });                
 }    
 
-void AsyncRequest::post(const Url &url, const StringMap &data, const UserCallback &callback)
+void AsyncRequest::post(const Url &url, const StringMap &data, UserCallback cb, ErrorCallback errorCb)
 { 
     Resolver::query query(url.host(), url.port());
 
-    auto context = std::make_shared<Context>(service_, url, Context::Method::Post, data, callback);        
+    auto context = std::make_shared<Context>(service_, url, Context::Method::Post, data, cb, errorCb);        
         
     resolver_.async_resolve(query,
                             [this, context] (const ErrorCode &err, Resolver::iterator iter)
@@ -62,8 +61,10 @@ void AsyncRequest::post(const Url &url, const StringMap &data, const UserCallbac
 void AsyncRequest::handleResolve(const ErrorCode &err, Resolver::iterator iter, ContextPtr context)
 {
     if (err)
-    {
-        throw Exception("Resolve domain name error: " + err.message());
+    {        
+        Exception e("Resolve domain name error: " + err.message());
+        context->handleError(e);
+        return;        
     }
         
     auto endpoint = iter->endpoint();
@@ -86,8 +87,10 @@ void AsyncRequest::handleConnect(const ErrorCode &err, Resolver::iterator iter, 
     {
         Resolver::iterator nullIter;            
         if (iter == nullIter)
-        {
-            throw Exception("Resolve domain name error: " + err.message());
+        {            
+            Exception e("Resolve domain name error: " + err.message());
+            context->handleError(e);
+            return;            
         }
         sock.close();
             
@@ -109,7 +112,9 @@ void AsyncRequest::handleWrite(const ErrorCode &err, ContextPtr context)
 {
     if (err)
     {
-        throw Exception("Send request headers to server error: " + err.message());
+        Exception e("Send request headers to server error: " + err.message());
+        context->handleError(e);
+        return;
     }
 
     auto &sock = context->socket();
@@ -130,7 +135,9 @@ void AsyncRequest::handleReadHeaders(const ErrorCode &err, ContextPtr context)
 {
     if (err)
     {
-        throw Exception("Read response headers error: " + err.message());
+        Exception e("Read response headers error: " + err.message());
+        context->handleError(e);
+        return;        
     }
 
     auto &sock = context->socket();
@@ -165,8 +172,10 @@ void AsyncRequest::handleReadBody(const ErrorCode &err, ContextPtr context)
     if (err)
     {
         if (err != boost::asio::error::eof)
-        {
-            throw Exception("Read response body error: " + err.message());                            
+        {            
+            Exception e("Read response body error: " + err.message());
+            context->handleError(e);
+            return;            
         }
             
         context->handleResponse();

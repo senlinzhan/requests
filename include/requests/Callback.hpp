@@ -4,11 +4,13 @@
 #include <functional>
 
 namespace requests {
-
-class Response;
     
-using UserCallback = std::function<void (Response &)>;
-
+class Response;
+class Exception;
+    
+using UserCallback  = std::function<void (Response &)>;
+using ErrorCallback = std::function<void (Exception &)>;
+    
 };
 
 
