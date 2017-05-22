@@ -4,7 +4,7 @@
 - 支持发送 GET 和 POST 请求
 - 支持同步和异步发送请求
 - 允许用户设置回调函数
-- 自动编码 URL
+- URL 自动编码
 ## 快速上手
 #### 同步发送请求
 ```C++
@@ -23,6 +23,7 @@ int main()
     {
         // 发起 HTTP 请求，阻塞
         auto resp = request.get(url);
+
         std::cout << resp.statusCode() << std::endl;               // 200
         std::cout << resp.headers()["Content-Type"] << std::endl;  // text/html
     }
