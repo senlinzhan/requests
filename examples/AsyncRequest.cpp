@@ -13,14 +13,14 @@ void callback(requests::Response &resp)
 }
 
 // 错误处理函数
-void errorCallback(requests::Exception &e)
+void errorCallback(const requests::Exception &e)
 {
     std::cout << e.what() << std::endl;    
 }
 
 int main()
 {
-    requests::AsyncRequest asyncRequest;
+    requests::AsyncRequest asyncRequest(4);     // 启动 4 个线程 
     requests::Url url("http://www.baidu.com");
     
     // 发起 HTTP 请求，非阻塞

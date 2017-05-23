@@ -9,7 +9,7 @@ class Response;
 class Exception;
     
 using UserCallback  = std::function<void (Response &)>;
-using ErrorCallback = std::function<void (Exception &)>;
+using ErrorCallback = std::function<void (const Exception &)>;
     
 };
 

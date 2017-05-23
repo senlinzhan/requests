@@ -7,21 +7,28 @@
 
 using namespace requests;
 
-AsyncRequest::AsyncRequest()
+AsyncRequest::AsyncRequest(std::size_t threadNum)
     : service_(),
       resolver_(service_),
       work_(new Work(service_))
 {
-    thread_.reset(new std::thread([this] ()
-                                  {
-                                      service_.run();
-                                  }));
+    for (int i = 0; i < threadNum; ++i)
+    {
+        threads_.emplace_back([this] ()
+                              {
+                                  service_.run();
+                              });
+    }
 }
 
 AsyncRequest::~AsyncRequest()
 {
     work_.reset(nullptr);
-    thread_->join();        
+
+    for (auto &t: threads_)
+    {
+        t.join();
+    }
 }
 
 void AsyncRequest::get(const Url &url, UserCallback cb, ErrorCallback errorCb)

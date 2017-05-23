@@ -7,6 +7,7 @@
 #include <memory>
 #include <unordered_map>
 #include <thread>
+#include <vector>
 
 namespace requests {
 
@@ -26,7 +27,7 @@ public:
     using StringMap  = std::unordered_map<String, String>;
     using ContextPtr = std::shared_ptr<Context>;
     
-    AsyncRequest();
+    AsyncRequest(std::size_t threadNum = std::thread::hardware_concurrency());
     ~AsyncRequest();
 
     // disable the copy operations
@@ -57,7 +58,7 @@ private:
     IOService                       service_;
     Resolver                        resolver_;
     std::unique_ptr<Work>           work_;
-    std::unique_ptr<std::thread>    thread_;
+    std::vector<std::thread>        threads_;
 };
 
 } // namespace requests
